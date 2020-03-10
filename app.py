@@ -6,14 +6,16 @@ import pickle
 # connect to db
 
 
-with open('models/rf_pipe.pkl','rb') as f:
+with open("models/rf_pipe.pkl", "rb") as f:
     MODEL = pickle.load(f)
 
 # get data
-DATA = (pd.read_csv('Dataset/titanic.csv')
-          .rename(columns=str.lower)
-          .drop(columns=['survived','name','ticket','cabin'])
-          .set_index('passengerid'))
+DATA = (
+    pd.read_csv("Dataset/titanic.csv")
+    .rename(columns=str.lower)
+    .drop(columns=["survived", "name", "ticket", "cabin"])
+    .set_index("passengerid")
+)
 
 # app
 app = Flask(__name__)
@@ -22,17 +24,22 @@ print(DATA.sample(1))
 print(MODEL.predict(DATA.sample(1)))
 
 # routes
-@app.route('/', methods=['POST'])
+@app.route("/", methods=["POST"])
 def predict():
+    json_row = request.get_json()
+    print(f"payload: {json_row}")
 
-    print(DATA.sample(1))
-    prediction = MODEL.predict(DATA.sample(1))
-    #data = clean_data(data)
+    df_row = (
+        pd.DataFrame(json_row, index=[0])
+        .rename(columns=str.lower)
+        .drop(columns=["name", "ticket", "cabin"])
+        .set_index("passengerid")
+    )
 
-    #data = data.head()
+    prediction = MODEL.predict(df_row)[0]
+    print(f"prediction for {df_row}: {prediction}")
+    return str(prediction)
 
-    #return jsonify(data)
-    return str(prediction[0]) #jsonify(results='This will return prepared data. Soon. Hopefully.')
 
-if __name__ == '__main__':
-    app.run(port = 5000, debug=True)
+if __name__ == "__main__":
+    app.run(port=5000, debug=True)
