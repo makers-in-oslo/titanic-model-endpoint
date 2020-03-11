@@ -1,4 +1,4 @@
-name: titanic-ml-endpoint-develop
+name: titanic-ml-endpoint-dev
 channels:
   - default
   - conda-forge

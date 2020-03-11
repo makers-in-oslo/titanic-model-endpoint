@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 import pandas as pd
 import pickle
 
-with open('models/rf_pipe.pkl','rb') as f:
+with open("models/rf_pipe.pkl", "rb") as f:
     MODEL = pickle.load(f)
 
 # app
@@ -30,8 +30,8 @@ def predict():
         return str(prediction)
     except:
         raise WrongInput(
-            "Payload should be json with all titanic headers except"
-            " survived as keys")
+            "Payload should be json with all titanic headers except survived as keys"
+        )
 
 
 class WrongInput(Exception):
@@ -46,7 +46,7 @@ class WrongInput(Exception):
 
     def to_dict(self):
         rv = dict(self.payload or ())
-        rv['message'] = self.message
+        rv["message"] = self.message
         return rv
 
 
@@ -58,4 +58,4 @@ def handle_invalid_usage(error):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(port=5000, debug=False)
