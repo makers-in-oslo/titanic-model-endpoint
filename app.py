@@ -3,9 +3,22 @@ from flask import Flask, jsonify, request
 import pandas as pd
 import pickle
 
-with open("models/rf_pipe.pkl", "rb") as f:
+with open("models/rf_pipev2.pkl", "rb") as f:
     MODEL = pickle.load(f)
 
+COLUMNS = [
+    "passengerid",
+    "pclass",
+    "name",
+    "sex",
+    "age",
+    "sibsp",
+    "parch",
+    "ticket",
+    "fare",
+    "cabin",
+    "embarked",
+]
 # app
 app = Flask(__name__)
 
@@ -15,17 +28,13 @@ app = Flask(__name__)
 def predict():
     try:
         json_row = request.get_json()
-        print(f"payload: {json_row}")
-
+        # Column ordering must be equal for fit and for transform when using the remainder keyword
         df_row = (
             pd.DataFrame(json_row, index=[0])
             .rename(columns=str.lower)
-            .drop(columns=["name", "ticket", "cabin"])
-            .set_index("passengerid")
+            .reindex(columns=COLUMNS)
         )
-
         prediction = MODEL.predict(df_row)[0]
-        print(f"prediction for {df_row}: {prediction}")
 
         return str(prediction)
     except:
