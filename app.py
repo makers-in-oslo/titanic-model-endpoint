@@ -1,18 +1,10 @@
 # import pandas as pd
 from flask import Flask, jsonify, request
-import pickle
 import pandas as pd
+import pickle
 
-with open("models/rf_pipe.pkl", "rb") as f:
+with open('models/rf_pipe.pkl','rb') as f:
     MODEL = pickle.load(f)
-
-# get data
-DATA = (
-    pd.read_csv("Dataset/titanic.csv")
-    .rename(columns=str.lower)
-    .drop(columns=["survived", "name", "ticket", "cabin"])
-    .set_index("passengerid")
-)
 
 # app
 app = Flask(__name__)
