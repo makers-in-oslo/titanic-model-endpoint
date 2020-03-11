@@ -1,10 +1,7 @@
 # import pandas as pd
 from flask import Flask, jsonify, request
-from data_prep import *
 import pickle
-
-# connect to db
-
+import pandas as pd
 
 with open("models/rf_pipe.pkl", "rb") as f:
     MODEL = pickle.load(f)
@@ -20,8 +17,6 @@ DATA = (
 # app
 app = Flask(__name__)
 
-print(DATA.sample(1))
-print(MODEL.predict(DATA.sample(1)))
 
 # routes
 @app.route("/", methods=["POST"])
